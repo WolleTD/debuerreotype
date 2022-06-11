@@ -9,7 +9,7 @@
 #   debootstrap --variant=minbase bullseye /tmp/docker-rootfs
 #   tar -cC /tmp/docker-rootfs . | docker import - debian:bullseye-slim
 # (or your own favorite set of "debootstrap" commands to create a base image for building this one FROM)
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN set -eux; \
 	apt-get update; \
@@ -17,7 +17,7 @@ RUN set -eux; \
 		debian-ports-archive-keyring \
 		debootstrap \
 		wget ca-certificates \
-		xz-utils \
+		xz-utils zstd binutils \
 		\
 		gnupg dirmngr \
 # add "gpgv" explicitly (for now) since it's transitively-essential in bookworm and gone in trixie+
