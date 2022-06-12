@@ -77,6 +77,17 @@ RUN set -eux; \
 		rm debootstrap-exclude-usrmerge-harder.patch; \
 	fi
 
+# Hotfix debootstrap to work correctly in a container. In short, the current version
+# 1) unmounts the container's /proc when the container is privileged
+# 2) doesn't mount /proc in the bootstrapping rootfs with CAP_SYS_ADMIN
+# https://salsa.debian.org/installer-team/debootstrap/-/merge_requests/26#note_171063
+RUN sed --in-place 's/ || \[ "$CONTAINER" = "docker" \]//' \
+    /usr/share/debootstrap/scripts/aequorea \
+    /usr/share/debootstrap/scripts/debian-common \
+    /usr/share/debootstrap/scripts/edgy \
+    /usr/share/debootstrap/scripts/feisty \
+    /usr/share/debootstrap/scripts/gutsy
+
 # see ".dockerignore"
 COPY . /opt/debuerreotype
 RUN set -eux; \
