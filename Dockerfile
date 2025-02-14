@@ -11,11 +11,11 @@
 # (or your own favorite set of "debootstrap" commands to create a base image for building this one FROM)
 FROM debian:bookworm-slim
 
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' > /etc/apt/sources.list.d/backports.list
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		debian-ports-archive-keyring \
-		debootstrap \
 		wget ca-certificates \
 		xz-utils zstd binutils \
 		\
@@ -23,6 +23,9 @@ RUN set -eux; \
 # add "gpgv" explicitly (for now) since it's transitively-essential in bookworm and gone in trixie+
 		gpgv \
 	; \
+    apt-get install -y -t bookworm-backports \
+        debootstrap \
+    ; \
 	rm -rf /var/lib/apt/lists/*
 
 # fight the tyrrany of HSTS (which destroys our ability to transparently cache snapshot.debian.org responses)
